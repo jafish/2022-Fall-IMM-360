@@ -37,6 +37,7 @@ public class FPSInput : MonoBehaviour {
 	void Update() {
 		// ////// Begin Prof. Fishburn's Additions to the Update method
 
+		// 1. Incorporate sprint and crouch from Challenge 2
 		Sprint();
 
 		Crouch();
