@@ -37,30 +37,10 @@ public class FPSInput : MonoBehaviour {
 	void Update() {
 		// ////// Begin Prof. Fishburn's Additions to the Update method
 
-		// Sprint
-		if (Input.GetKeyDown(KeyCode.LeftShift))
-		{
-			speed = sprintSpeed;
-		}
-		else if (Input.GetKeyUp(KeyCode.LeftShift))
-		{
-			speed = defaultSpeed;
-		}
+		Sprint();
 
-		// Crouch
-		if (Input.GetKeyDown(KeyCode.C))
-		{
-			speed = crouchSpeed;
-			Vector3 camPos = Camera.main.transform.position;
-			Camera.main.transform.position = new Vector3(camPos.x, camPos.y - crouchAmount, camPos.z);
-		}
-		else if (Input.GetKeyUp(KeyCode.C))
-		{
-			speed = defaultSpeed;
-			Vector3 camPos = Camera.main.transform.position;
-			Camera.main.transform.position = new Vector3(camPos.x, camPos.y + crouchAmount, camPos.z);
-		}
-
+		Crouch();
+		
 		// ////// End Prof. Fishburn's Additions
 
 		//transform.Translate(Input.GetAxis("Horizontal") * speed * Time.deltaTime, 0, Input.GetAxis("Vertical") * speed * Time.deltaTime);
@@ -74,5 +54,37 @@ public class FPSInput : MonoBehaviour {
 		movement *= Time.deltaTime;
 		movement = transform.TransformDirection(movement);
 		_charController.Move(movement);
+	}
+
+	// Refactoring my sprint and crouch code into their own methods
+    // to make the code easier to read in Update
+	void Sprint()
+	{
+		// Sprint
+		if (Input.GetKeyDown(KeyCode.LeftShift))
+		{
+			speed = sprintSpeed;
+		}
+		else if (Input.GetKeyUp(KeyCode.LeftShift))
+		{
+			speed = defaultSpeed;
+		}
+	}
+
+	void Crouch()
+	{
+		// Crouch
+		if (Input.GetKeyDown(KeyCode.C))
+		{
+			speed = crouchSpeed;
+			Vector3 camPos = Camera.main.transform.position;
+			Camera.main.transform.position = new Vector3(camPos.x, camPos.y - crouchAmount, camPos.z);
+		}
+		else if (Input.GetKeyUp(KeyCode.C))
+		{
+			speed = defaultSpeed;
+			Vector3 camPos = Camera.main.transform.position;
+			Camera.main.transform.position = new Vector3(camPos.x, camPos.y + crouchAmount, camPos.z);
+		}
 	}
 }
