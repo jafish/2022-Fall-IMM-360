@@ -7,16 +7,62 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 [AddComponentMenu("Control Script/FPS Input")]
 public class FPSInput : MonoBehaviour {
-	public float speed = 6.0f;
-	public float gravity = -9.8f;
+
+	// Instead of making these variables public, I'll make them private because
+	// I don't want other scripts modifying their values. However, I still want to
+	// see them in the Inspector window, so I'll use the [SerializeField] attribute
+	[SerializeField]
+	private float gravity, defaultSpeed, crouchSpeed, crouchAmount, sprintSpeed;
+
+	// This represents the current speed, so it doesn't need to be publicly accessible or
+	// visible in the inspector—it is here merely for this script to update the
+	// CharacterController's movement via the Move method
+	private float speed;
 
 	private CharacterController _charController;
 	
 	void Start() {
+		// I like to separate the declaration of the variable (see above) from
+		// setting the initial value
+		defaultSpeed = 6.0f;
+		speed = defaultSpeed;
+		gravity = -9.8f;
+		crouchSpeed = 3.0f;
+		sprintSpeed = 12.0f;
+		crouchAmount = 1.0f;
+
 		_charController = GetComponent<CharacterController>();
 	}
 	
 	void Update() {
+		// ////// Begin Prof. Fishburn's Additions to the Update method
+
+		// Sprint
+		if (Input.GetKeyDown(KeyCode.LeftShift))
+		{
+			speed = sprintSpeed;
+		}
+		else if (Input.GetKeyUp(KeyCode.LeftShift))
+		{
+			speed = defaultSpeed;
+		}
+
+		// Crouch
+		if (Input.GetKeyDown(KeyCode.C))
+		{
+			speed = crouchSpeed;
+			Vector3 camPos = Camera.main.transform.position;
+			Camera.main.transform.position = new Vector3(camPos.x, camPos.y - crouchAmount, camPos.z);
+		}
+		else if (Input.GetKeyUp(KeyCode.C))
+		{
+			speed = defaultSpeed;
+			Vector3 camPos = Camera.main.transform.position;
+			Camera.main.transform.position = new Vector3(camPos.x, camPos.y + crouchAmount, camPos.z);
+		}
+
+		// ////// End Prof. Fishburn's Additions
+
 		//transform.Translate(Input.GetAxis("Horizontal") * speed * Time.deltaTime, 0, Input.GetAxis("Vertical") * speed * Time.deltaTime);
 		float deltaX = Input.GetAxis("Horizontal") * speed;
 		float deltaZ = Input.GetAxis("Vertical") * speed;
